@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tool to Fix Formatting</title>
+  <script src="https://kit.fontawesome.com/3365746789.js" crossorigin="anonymous"></script>
+
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .pdfprojectcontainer {
+      display: flex;
+      margin: 0 auto;
+      justify-content: center;
+      /* Center horizontally */
+      align-items: center;
+      /* Center vertically */
+    }
+
+    .richtextcontainer {
+      width: 966px;
+      height: 666px;
+      background-color: white;
+      border-radius: 10px;
+      border: solid 1px rgba(0, 0, 0, 0.212);
+      box-shadow: 0 15px 15px 0 rgba(0, 0, 0, 0.14);
+
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .buttonscontainer {
+      justify-content: center;
+      align-items: center;
+    }
+
+    .controls {
+      height: 50px;
+      width: 100%;
+      background-color: black;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      background-color: rgb(255, 254, 254);
+      box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.144);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .filebuttons {
+      margin-left: 15px;
+      user-select: none;
+    }
+
+    .filebuttons>* {
+      margin-right: 5px;
+    }
+
+    .buttonwhite:hover,
+    .editorbuttons:hover {
+      background-color: #988dff;
+    }
+
+    .buttonwhite:active,
+    .editorbuttons:active {
+      background-color: #7666f7;
+    }
+
+
+
+    .buttonwhite {
+      padding: 10px;
+      border: none;
+      background-color: rgb(255, 255, 255);
+      border-radius: 5px;
+      color: rgb(0, 0, 0);
+      font-size: 15px;
+      cursor: pointer;
+      user-select: none;
+      text-decoration: none;
+    }
+
+    #content {
+      width: 95%;
+      height: 566px;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+      outline: none;
+      margin: 25px auto 0;
+      overflow-y: auto;
+      font-size: 18px;
+      margin-bottom: 5px;
+      font-family: Arial, Helvetica, sans-serif !important;
+    }
+
+    #content a:visited,
+    #content a {
+      color: #0051ff
+    }
+
+    .pdfprojectcontainerfixlines {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+      pointer-events: none;
+    }
+
+    .pdfprojectcontainerfixlines.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .fixlines {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 900px;
+      height: 666px;
+      background-color: white;
+      margin-right: 50px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.088);
+      border-radius: 10px;
+      border: solid 1px rgba(0, 0, 0, 0.212);
+    }
+
+
+    .topdivlistlines {
+      height: 60px;
+      width: 100%;
+      background-color: black;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      background-color: rgb(255, 254, 254);
+      box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.144);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+
+    .fixlines form {
+      width: 100%;
+      height: 100%;
+    }
+
+    .fixlines textarea {
+      width: 95%;
+      height: 530px;
+      margin: 10px;
+      outline: none;
+      border: none;
+      font-family: inherit;
+      font-size: 16px;
+      resize: none;
+
+    }
+
+    .fixlines input[type="submit"] {
+      padding: 10px;
+      width: 30%;
+      border: none;
+      background-color: black;
+      border-radius: 5px;
+      color: white;
+      font-size: 15px;
+      box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.205);
+      cursor: pointer;
+      user-select: none;
+      margin-left: 35%;
+      font-family: inherit;
+    }
+
+    .fixlines input[type="submit"]:hover {
+      background-color: #695CFE;
+    }
+
+    .fixlines input[type="submit"]:active {
+      background-color: #4f40f7;
+    }
+
+    .goodtext {
+      width: 95%;
+      height: 540px;
+      word-wrap: break-word;
+      white-space: normal;
+      max-height: 540px;
+      margin: 10px;
+      outline: none;
+      border: none;
+      font-family: inherit;
+      font-size: 16px;
+      overflow: auto;
+    }
+
+    .goodtext::-webkit-scrollbar {
+      width: 0.5em;
+    }
+
+    .goodtext::-webkit-scrollbar-thumb {
+      background-color: #888;
+    }
+
+    .goodtext::-webkit-scrollbar-track {
+      background-color: #f1f1f1;
+    }
+
+    button[type="button"] {
+      margin: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div style="text-align: center;">
+   
+
+  </div>
+  <div class="pdfprojectcontainer" id="top">
+
+    <div class="richtextcontainer">
+
+      <div class="controls">
+
+        <div class="filebuttons">
+
+          <button id="new-btn" class="buttonwhite">
+            <i class="fa-solid fa-file"></i> New
+          </button>
+
+          <button id="save-btn" class="buttonwhite">
+            <i class="fa-solid fa-floppy-disk"></i> Save
+          </button>
+
+          <button button class="buttonwhite" id="fix-btn">
+            <i class="fas fa-tools"></i> Fix Formatting
+          </button>
+
+        </div>
+      </div>
+
+      <div id="content" contenteditable="true" spellcheck="true">
+        <!-- Content area where the formatted text will be displayed -->
+      </div>
+
+      <div class="pdfprojectcontainerfixlines" id="messedlines">
+        <div class="fixlines" id="fixlines">
+          <div class="topdivlistlines">
+            <span style="margin-left: 15px; font-weight: bold; font-size: 18px; color: black;">Clear all formatting</span>
+          </div>
+          <form method="post" id="fixformats">
+            <textarea id="textInput" name="text_input" placeholder="Please enter your text here.&#10;&#10;This can be used to clear all formatting, and it can also fix the paragraph structure when you copy text from PDFs.&#10;&#10;Ensure that you separate all paragraphs by placing a line between them."></textarea>
+            <br>
+            <input type="submit" name="submit" value="Fix Formatting">
+          </form>
+        </div>
+      </div>
+
+      <script>
+        function removeExtraSpacesAndLineBreaks(text) {
+          // Split the text into paragraphs based on empty lines
+          const paragraphs = text.split('\n\n');
+
+          // Remove extra spaces within each paragraph
+          const cleanedParagraphs = paragraphs.map((paragraph) => {
+            // Remove extra spaces and line breaks within each paragraph
+            paragraph = paragraph.replace(/\s+/g, ' ').trim();
+            return paragraph;
+          });
+
+          // Join the cleaned paragraphs back into a single text with empty lines preserved
+          const cleanedText = cleanedParagraphs.join('\n\n');
+
+          return cleanedText;
+        }
+
+        const form = document.getElementById('fixformats');
+
+        form.addEventListener('submit', function(event) {
+          event.preventDefault();
+
+          const textInput = document.getElementById('textInput').value;
+
+          const cleanedText = removeExtraSpacesAndLineBreaks(textInput);
+
+          const formattedText = cleanedText.replace(/\n/g, '<br>');
+
+          const resultDiv = document.getElementById('content');
+          resultDiv.innerHTML = formattedText;
+        });
+
+
+        const newBtn = document.querySelector("#new-btn")
+        const content = document.querySelector("#content");
+
+        newBtn.addEventListener("click", () => {
+          content.innerHTML = ""
+        })
+
+        document.getElementById('save-btn').addEventListener('click', function() {
+          var content = document.getElementById('content').innerText;
+
+          // Create a temporary <a> element to trigger the file download
+          var downloadLink = document.createElement('a');
+          downloadLink.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
+
+          // Prompt the user to save the file
+          downloadLink.setAttribute('download', 'insert-name-here.txt');
+          downloadLink.style.display = 'none';
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          document.body.removeChild(downloadLink);
+        });
+        window.addEventListener('DOMContentLoaded', (event) => {
+          const fixBtn = document.getElementById('fix-btn');
+          const fixLinesContainer = document.getElementById('fixlines');
+          const container = document.getElementById('messedlines');
+
+          // Show the div when the button is clicked
+          fixBtn.addEventListener('click', () => {
+            container.classList.add('show');
+          });
+
+          // Hide the div when clicking outside the fixlines div
+          document.addEventListener('mouseup', (event) => {
+            if (!fixLinesContainer.contains(event.target)) {
+              container.classList.remove('show');
+            }
+          });
+
+          // Assuming you have an HTML form with the id "fixformats"
+          const form = document.getElementById('fixformats');
+
+          form.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            // Get user input from the form
+            const textInput = document.getElementById('textInput').value;
+
+            // Remove extra spaces and line breaks from user input
+            const cleanedText = removeExtraSpacesAndLineBreaks(textInput);
+
+            // Convert line breaks to HTML <br> tags
+            const formattedText = cleanedText.replace(/\n/g, '<br>');
+
+            // Display the formatted text
+            const resultDiv = document.getElementById('content');
+            resultDiv.innerHTML = formattedText;
+
+            // Hide the fixlines div after submitting the form
+            container.classList.remove('show');
+          });
+        });
+      </script>
+</body>
+
+</html>
