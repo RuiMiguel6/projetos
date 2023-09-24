@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Editing Verification</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: rgb(236, 236, 236);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1,
+    h2 {
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .input-container {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .input-container textarea {
+      width: 300px;
+      height: 500px;
+      padding: 10px;
+      font-size: 18px;
+      resize: none;
+    }
+
+    button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #0059ff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #3f7ef3;
+    }
+
+    button:active {
+      background-color: #0041b9;
+    }
+
+    #highlighted-changes {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      background-color: white;
+    }
+
+    .added {
+      background-color: #99ff99;
+    }
+
+    .deleted {
+      background-color: #f79090;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Editing Verification</h1>
+
+    <div class="input-container">
+      <div>
+        <h2>Original Text</h2>
+        <textarea id="original-text" placeholder="Enter the original text"></textarea>
+      </div>
+      <div>
+        <h2>Edited Text</h2>
+        <textarea id="edited-text" placeholder="Enter the edited text"></textarea>
+      </div>
+    </div>
+
+    <button onclick="highlightChanges()">Highlight Changes</button>
+    <button onclick="resetFields()">Reset</button>
+
+    <div id="highlighted-changes"></div>
+  </div>
+
+  <script>
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function highlightChanges() {
+      const originalText = document.getElementById('original-text').value;
+      const editedText = document.getElementById('edited-text').value;
+
+      const m = originalText.length;
+      const n = editedText.length;
+
+      const dp = new Array(m + 1).fill(null).map(() => new Array(n + 1).fill(0));
+
+      for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+          if (originalText[i - 1] === editedText[j - 1]) {
+            dp[i][j] = dp[i - 1][j - 1] + 1;
+          } else {
+            dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+          }
+        }
+      }
+
+      let i = m;
+      let j = n;
+
+      let highlightedText = '';
+
+      while (i > 0 || j > 0) {
+        if (i > 0 && j > 0 && originalText[i - 1] === editedText[j - 1]) {
+          highlightedText = originalText[i - 1] + highlightedText;
+          i--;
+          j--;
+        } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
+          highlightedText = '<span class="added">' + escapeHtml(editedText[j - 1]) + '</span>' + highlightedText;
+          j--;
+        } else if (i > 0 && (j === 0 || dp[i][j - 1] < dp[i - 1][j])) {
+          highlightedText = '<span class="deleted">' + escapeHtml(originalText[i - 1]) + '</span>' + highlightedText;
+          i--;
+        }
+      }
+
+      document.getElementById('highlighted-changes').innerHTML = highlightedText;
+    }
+
+    function resetFields() {
+      document.getElementById('original-text').value = '';
+      document.getElementById('edited-text').value = '';
+      document.getElementById('highlighted-changes').innerHTML = '';
+    }
+  </script>
+</body>
+
+</html>
